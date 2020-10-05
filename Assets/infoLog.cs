@@ -2,37 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
-namespace asd
+public class infoLog : MonoBehaviour
 {
-    public class infoLog : MonoBehaviour
+    private Player _player1;
+    private Text _textLog;
+    // Start is called before the first frame update
+    void Start()
     {
-        public Rigidbody2D player1;
-        private Text _textLog;
-        // Start is called before the first frame update
-        void Start()
+        _textLog = GetComponent<Text>();
+        _player1 = GameObject.FindGameObjectWithTag("Player1").GetComponent<Player>();
+    }
+    void FixedUpdate()
+    {
+        if(_player1 != null)
         {
-            _textLog = GetComponent<Text>();
+            //_textLog.text = AI.Data.Player(_player1);
         }
-
-        // Update is called once per frame
-        void FixedUpdate()
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F11))
         {
-            double cos = ControlOptions.GetAngle();
-            _textLog.text = "GetAxis:\n"
-                + "PlayerSpeed = " + player1.velocity.x + "\n"
-                + "Move = " + Input.GetAxis("Horizontal") + "\n"
-                + "RightStickX = " + Input.GetAxis("RightStickX") + "\n"
-                + "RightStickY = " + Input.GetAxis("RightStickY") + "\n"               
-                + "angel = " + cos + "\n";
-        }
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F11))
-            {
-                _textLog.enabled = !_textLog.enabled;
-            }
+            _textLog.enabled = !_textLog.enabled;
         }
     }
 }

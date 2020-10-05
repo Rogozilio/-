@@ -1,78 +1,90 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public Rigidbody2D player1;
     private SpriteRenderer sprite;
-    public float move;
+    private float _move;
     public float speed = 10f;
-    private Animator ani;
-    private double angle;
+    private Animator _ani;
+    private double _angle;
+    public double Angle
+    {
+        get
+        {
+            return _angle;
+        }
+    }
+    public double Move {
+        get
+        {
+            return _move;
+        } 
+    }
 
-    // Start is called before the first frame update
     void Start()
     {
-        ani = GetComponent<Animator>();
+        _ani = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
     }
 
     private void FixedUpdate()
     {
-        move = Input.GetAxis("Horizontal");
-        angle = ControlOptions.GetAngle();
+        _move = Input.GetAxis("Horizontal");
+        _angle = ControlOptions.GetAngle();
     }
 
     void Update()
     {
-        player1.velocity = new Vector2(move * speed, player1.velocity.y);
+        player1.velocity = new Vector2(_move * speed, player1.velocity.y);
         if (Input.GetKey(KeyCode.R))
         {
-            Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene("SampleScreen");
         }
-        if(!double.IsNaN(angle) && ani.GetInteger("statusFight") == 1)
+        if (!double.IsNaN(_angle) && _ani.GetInteger("statusFight") == 1)
         {
-            ani.SetInteger("statusFight", 2);
+            _ani.SetInteger("statusFight", 2);
         }
-        if (double.IsNaN(angle) && ani.GetInteger("statusFight") == 2)
+        if (double.IsNaN(_angle) && _ani.GetInteger("statusFight") == 2)
         {
-            ani.SetInteger("statusFight", 1);
+            _ani.SetInteger("statusFight", 1);
         }
         if (Input.GetButtonDown("Y"))
         {
-            if(ani.GetInteger("statusFight") == 0)
+            if (_ani.GetInteger("statusFight") == 0)
             {
-                ani.SetInteger("statusFight", 1);
+                _ani.SetInteger("statusFight", 1);
             }
             else
             {
-                ani.SetInteger("statusFight", 0);
-            } 
+                _ani.SetInteger("statusFight", 0);
+            }
         }
         Walk();
         Fight();
-        Input.GetAxis("Horizontal");
     }
     void Walk()
     {
-        if (move > 0)
+        if (_move > 0)
         {
             sprite.flipX = false;
         }
-        if (move < 0)
+        if (_move < 0)
         {
             sprite.flipX = true;
         }
-        if (move == 0)
+        if (_move == 0)
         {
-            ani.SetBool("isWalk", false);
+            _ani.SetBool("isWalk", false);
         }
         else
         {
-            ani.SetBool("isWalk", true);
+            _ani.SetBool("isWalk", true);
         }
     }
     void Fight()
     {
-        ani.SetFloat("AngleStick", (float)angle);
+        _ani.SetFloat("AngleStick", (float)_angle);
     }
 }
