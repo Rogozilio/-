@@ -19,36 +19,81 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// Значение статуса обнаружения играков
     /// </summary>
-    private StatusSearch statusSearch;
+    private StatusSearch    statusSearch;
+    public Animator         ani;
 
+    public NodeSelector     rootNode;
+    public NodeAction       node1;
+    public NodeAction       node2;
+    public NodeAction       node3;
+    public NodeAction       node4;
+
+    private NodeStates WithoutOpponent()
+    {
+        if (statusSearch == StatusSearch.Nothing)
+        {
+            ani.SetInteger("searcheStatus", 0);
+            Debug.Log("Nothing");
+            return NodeStates.SUCCESS;
+        }
+        return NodeStates.FAILURE;
+    }
+    private NodeStates OneOpponent()
+    {
+        if(statusSearch == StatusSearch.One)
+        {
+            ani.SetInteger("searcheStatus", 1);
+            Debug.Log("One");
+            return NodeStates.SUCCESS;
+        }
+        return NodeStates.FAILURE;
+    }
+    private NodeStates TwoOpponent()
+    {
+        if (statusSearch == StatusSearch.Two)
+        {
+            ani.SetInteger("searcheStatus", 2);
+            Debug.Log("Two");
+            return NodeStates.SUCCESS;
+        }
+        return NodeStates.FAILURE;
+    }
+    private NodeStates OneOpponentPlusOne()
+    {
+        if (statusSearch == StatusSearch.OneWithoutSecond)
+        {
+            ani.SetInteger("searcheStatus", 1);
+            Debug.Log("OnePlusOne");
+            return NodeStates.SUCCESS;
+        }
+        return NodeStates.FAILURE;
+    }
+    void Start()
+    {
+        ani = GetComponent<Animator>();
+
+        List<Node> rootChildren = new List<Node>();
+
+        node1 = new NodeAction(WithoutOpponent);
+        node2 = new NodeAction(OneOpponent);
+        node3 = new NodeAction(TwoOpponent);
+        node4 = new NodeAction(OneOpponentPlusOne);
+
+        
+        rootChildren.Add(node1);
+        rootChildren.Add(node2);
+        rootChildren.Add(node3);
+        rootChildren.Add(node4);
+
+        rootNode = new NodeSelector(rootChildren);
+    }
     void Update()
     {
-        if (_isPlayer1 == true)
-        {
-            RaycastHit hit;
-
-            Ray ray = Distance.Ray(transform.position,
-                _player1.transform.position - transform.position);
-            Physics.Raycast(ray, out hit);
-            if (hit.collider != null)
-            {
-                //если луч не попал в цель
-                if (hit.collider.gameObject != _player1.gameObject)
-                {
-                    Debug.Log("Путь к врагу преграждает объект: " + hit.collider.name);
-                }
-                //если луч попал в цель
-                else
-                {
-                    Debug.Log("Попадаю во врага!!!");
-                }
-                //просто для наглядности рисуем луч в окне Scene
-                Debug.DrawLine(ray.origin, hit.point, Color.red);
-            }
-
-        }
+        SearchPlayer();
+        rootNode.Evaluate();
+           
     }
-    protected StatusSearch SearchPlayer()
+    private StatusSearch SearchPlayer()
     {
         if (_isPlayer1 == false && _isPlayer2 == false)
         {
