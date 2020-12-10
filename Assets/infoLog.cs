@@ -7,7 +7,6 @@ public class infoLog : MonoBehaviour
 {
     private Player _player1;
     private Text _textLog;
-    // Start is called before the first frame update
     void Start()
     {
         _textLog = GetComponent<Text>();
