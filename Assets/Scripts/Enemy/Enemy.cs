@@ -99,27 +99,28 @@ namespace Assets.Enemy
         }
         void Start()
         {
-            ani = GetComponent<Animator>();
-            sprite = GetComponent<SpriteRenderer>();
+            ani                 = GetComponent<Animator>();
+            sprite              = GetComponent<SpriteRenderer>();
+            
+
+            List<Node> rootChildren         = new List<Node>();
+            List<Node> animationChildren    = new List<Node>();
+
+            Npeaceful           = new NodeAction(WithoutOpponent);
+            Nattack1            = new NodeAction(OneOpponent);
+            Nattack2            = new NodeAction(TwoOpponent);
+            NattackAndDefend    = new NodeAction(OneOpponentPlusOne);
+            Nreversal           = new NodeAction(Reversal);
+            Ndrawray            = new NodeAction(DrawRay);
+            
             ani.SetInteger("searchStatus", 0);
-
-            List<Node> rootChildren = new List<Node>();
-            List<Node> animationChildren = new List<Node>();
-
-            Npeaceful = new NodeAction(WithoutOpponent);
-            Nattack1 = new NodeAction(OneOpponent);
-            Nattack2 = new NodeAction(TwoOpponent);
-            NattackAndDefend = new NodeAction(OneOpponentPlusOne);
-            Nreversal = new NodeAction(Reversal);
-            Ndrawray = new NodeAction(DrawRay);
-
             animationChildren.Add(Nreversal);
             animationChildren.Add(Npeaceful);
             animationChildren.Add(Nattack1);
             animationChildren.Add(Nattack2);
             animationChildren.Add(NattackAndDefend);
 
-            Nanimation = new NodeSelector(animationChildren);
+            Nanimation          = new NodeSelector(animationChildren);
 
             rootChildren.Add(Ndrawray);
             rootChildren.Add(Nanimation);
